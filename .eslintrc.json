@@ -15,11 +15,11 @@
     "react/react-in-jsx-scope": 1
   },
   "parserOptions": {
-    "ecmaVersion": 2017,
+    "ecmaVersion": 2018,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-  }
+    }
   },
   "env": {
     "es6": true
