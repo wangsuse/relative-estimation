@@ -19,7 +19,7 @@ const initialData = {
     },
     "dummy-0": {
       id: "dummy-0",
-      title: "new Column",
+      title: "",
       taskIds: [],
       type: "dummy"
     },
@@ -30,7 +30,7 @@ const initialData = {
     },
     "dummy-1": {
       id: "dummy-1",
-      title: "new Column",
+      title: "",
       taskIds: [],
       type: "dummy"
     },
@@ -38,9 +38,15 @@ const initialData = {
       id: "column-3",
       title: "Size: Large",
       taskIds: []
-    }
+    },
+    "dummy-2": {
+      id: "dummy-2",
+      title: "",
+      taskIds: [],
+      type: "dummy"
+    },
   },
-  columnOrder: ["column-1", "dummy-0", "column-2", "dummy-1", "column-3"]
+  columnOrder: ["column-1", "dummy-0", "column-2", "dummy-1", "column-3","dummy-2"]
 }
 
 export default initialData;

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Task from './task'
 import { Droppable } from 'react-beautiful-dnd';
 import EditableLabel from 'react-inline-editing';
-import {updateColumnTitle} from '../store'
+import { updateColumnTitle, removeColumn} from '../store'
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 2px;
@@ -27,8 +27,21 @@ const PlusContainer = styled.div`
   display: flex;
 `;
 
-const Title = styled.h3`
+const TitleContainer = styled.div`
   padding: 8px;
+  width: 100%;
+  display: flex
+`;
+const Title = styled.div`
+  width: 100%;
+  float: left;
+`;
+const Close = styled.div`
+  float: right;
+  padding-right: 20px;
+  &:hover {
+    cursor: pointer
+  }
 `;
 const TaskList = styled.div`
   padding: 8px;
@@ -53,8 +66,18 @@ class Column extends React.Component {
   _handleFocusOut(text) {
     console.log(`text changed to ${text}`)
     const columnId = this.props.column.id;
-    this.props.dispatchUpdateColumnTitle({columnId, text})
+    this.props.dispatchUpdateColumnTitle({ columnId, text })
 
+  }
+
+  handleClose(columnId){
+    console.log("closed clicked");
+    // remove this column and the next dummy plus column
+    if (this.props.column.taskIds.length !== 0){
+      alert("A group can only be deleted when it is empty.")
+      return;
+    }
+    this.props.dispatchRemoveColumn(columnId);
   }
 
   render() {
@@ -81,14 +104,18 @@ class Column extends React.Component {
     } else {
       return (
         < Container >
-          <EditableLabel text={this.props.column.title}
-            labelClassName='myLabelClass'
-            inputClassName='myInputClass'
-            labelFontWeight='bold'
-            inputFontWeight='bold'
-            onFocusOut={this._handleFocusOut.bind(this)}
-          />
-
+          <TitleContainer>
+            <Title>
+              <EditableLabel text={this.props.column.title}
+                labelClassName='myLabelClass'
+                inputClassName='myInputClass'
+                labelFontWeight='bold'
+                inputFontWeight='bold'
+                onFocusOut={this._handleFocusOut.bind(this)}
+              />
+            </Title>
+            <Close onClick={this.handleClose.bind(this, this.props.column.id)}>X</Close>
+          </TitleContainer>
           <Droppable droppableId={this.props.column.id}>
             {(provided, snapshot) => (
               <TaskList
@@ -112,6 +139,7 @@ class Column extends React.Component {
 const mapDispatch = dispatch => {
   return {
     dispatchUpdateColumnTitle: (data) => dispatch(updateColumnTitle(data)),
+    dispatchRemoveColumn: (columnId) => dispatch(removeColumn(columnId))
   }
 }
 

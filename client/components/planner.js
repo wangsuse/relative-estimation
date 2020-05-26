@@ -123,7 +123,7 @@ class Planner extends React.Component {
       const newColumnId = "column-"+ uuidv4();
       const destinationColumn = {
           id: newColumnId,
-          title: "New Column",
+          title: "Click to edit title",
           taskIds: [draggableId]
       }
       const newDummyId = "dummy-" + uuidv4();
