@@ -3,12 +3,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { loadInitialData, updatePlanner } from '../store'
 import Column from './column'
+import Actions from './actions'
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid';
 
 const Container = styled.div`
   display : flex;
+  flex-direction : column
+`;
+const ColumnContainer = styled.div`
+display : flex;
 `;
 
 class Planner extends React.Component {
@@ -17,64 +22,13 @@ class Planner extends React.Component {
   }
 
   onDragStart(start) {
-    // create the '+' columns
     console.log("drag started")
-    // const newColumns = {...this.props.planner.columns};
-    // const l = Object.keys(newColumns).length;
-    // let index = 0
-    // for (let i = 0; i < l; i++){
-    //   newColumns[`dummy-${index}`] = {
-    //     id: `dummy-${index}`,
-    //     title: "",
-    //     taskIds: [],
-    //     type: "dummy"
-    //   };
-    //   index += 1;
-    // }
-    // const columnOrder = this.props.planner.columnOrder;
-    // const newColumnOrder = []
-    // for (let i = 0; i < l; i++) {
-    //   newColumnOrder.push(columnOrder[i]);
-    //   newColumnOrder.push(`dummy-${i}`);
-    // }
-
-    // const newPlanner = {
-    //   ...this.props.planner,
-    //   columns: newColumns,
-    //   columnOrder:newColumnOrder
-    // };
-
-    // this.props.dispatchUpdatePlanner(newPlanner);
-
   }
   onDragUpdate() {
     console.log("onDragUpdate called")
   }
 
-  // removeDummyColumn() {
-  //   // remove the "+" column
-  //   const newColumns = {};
-  //   const columns = this.props.planner.columns;
-  //   for (const key in columns){
-  //     if (columns[key].type !== "dummy"){
-  //       newColumns[key] = {...columns[key]}
-  //     }
-  //   }
-
-  //   const newColumnOrder = Array.from(this.props.planner.columnOrder).filter(columnName =>{
-  //     return !columnName.startsWith("dummy-")
-  //   });
-
-  //   const newPlanner = {
-  //     ...this.props.planner,
-  //     columns: newColumns,
-  //     columnOrder:newColumnOrder
-  //   };
-
-  //   this.props.dispatchUpdatePlanner(newPlanner);
-  // }
   onDragEnd(result) {
-    // this.removeDummyColumn.bind(this)();
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -84,6 +38,31 @@ class Planner extends React.Component {
     if (destination.droppableId === source.droppableId
       && destination.index === source.index
     ) {
+      return;
+    }
+    // if drop to delete zone, delete task
+    if (destination.droppableId === "deleteZone"){
+      const column = this.props.planner.columns[source.droppableId];
+      const newTaskIds = Array.from(column.taskIds);
+      newTaskIds.splice(source.index, 1);
+
+      const newTasks = {...this.props.planner.tasks};
+      delete newTasks[draggableId]
+
+      const newColumn = {
+        ...column,
+        taskIds: newTaskIds
+      };
+
+      const newPlanner = {
+        ...this.props.planner,
+        columns: {
+          ...this.props.planner.columns,
+          [newColumn.id]: newColumn
+        },
+        tasks:newTasks
+      };
+      this.props.dispatchUpdatePlanner(newPlanner);
       return;
     }
 
@@ -184,10 +163,7 @@ class Planner extends React.Component {
         }
       };
       this.props.dispatchUpdatePlanner(newPlanner);
-
     }
-
-
   }
 
   render() {
@@ -198,6 +174,8 @@ class Planner extends React.Component {
           onDragUpdate={this.onDragUpdate.bind(this)}
           onDragEnd={this.onDragEnd.bind(this)}
         >
+          <Actions/>
+          <ColumnContainer>
           {this.props.planner.columnOrder.map((columnId) => {
             const column = this.props.planner.columns[columnId];
             const tasks = column.taskIds.map(taskId => {
@@ -205,6 +183,7 @@ class Planner extends React.Component {
             })
             return <Column key={column.id} column={column} tasks={tasks} />
           })}
+          </ColumnContainer>
         </DragDropContext>
       </Container>
     )
