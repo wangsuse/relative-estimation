@@ -14,7 +14,7 @@ const initialData = {
   columns: {
     "column-1": {
       id: "column-1",
-      title: "Size: Small",
+      title: "To be Estimated",
       taskIds: ["task-1", "task-2", "task-3", "task-4", "task-5","task-6", "task-7", "task-8", "task-9", "task-10"]
     },
     "dummy-0": {
@@ -25,7 +25,7 @@ const initialData = {
     },
     "column-2": {
       id: "column-2",
-      title: "Size: Middle",
+      title: "Size: Small",
       taskIds: []
     },
     "dummy-1": {
@@ -36,7 +36,7 @@ const initialData = {
     },
     "column-3": {
       id: "column-3",
-      title: "Size: Large",
+      title: "Size: Medium",
       taskIds: []
     },
     "dummy-2": {
