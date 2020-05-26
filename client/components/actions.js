@@ -42,6 +42,18 @@ const Button = styled.button`
 `;
 
 
+const ExportButton = styled.button`
+  background-color: cornflowerblue;
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 0 2px 0 2px;
+`;
+
 
 class Actions extends React.Component {
   handleClearBoard() {
@@ -61,7 +73,16 @@ class Actions extends React.Component {
     return;
   }
 
-  handleAddCards() {
+  handleExport() {
+    const dataStr = JSON.stringify(this.props.planner);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+    const exportFileDefaultName = 'data.json';
+
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
   }
 
   render() {
@@ -69,6 +90,7 @@ class Actions extends React.Component {
       <Container>
         <AddCards></AddCards>
         <Button onClick={this.handleClearBoard.bind(this)}>Reset Board(Clear all)</Button>
+        <ExportButton onClick={this.handleExport.bind(this)}>Export/Download</ExportButton>
         <Droppable droppableId="deleteZone">
           {(provided, snapshot) => (
             <DeleteZone
@@ -86,6 +108,14 @@ class Actions extends React.Component {
     );
   }
 }
+/**
+ * CONTAINER
+ */
+const mapState = state => {
+  return {
+    planner: state.planner
+  }
+}
 
 const mapDispatch = dispatch => {
   return {
@@ -93,4 +123,4 @@ const mapDispatch = dispatch => {
   }
 }
 
-export default connect(null, mapDispatch)(Actions)
+export default connect(mapState, mapDispatch)(Actions)
