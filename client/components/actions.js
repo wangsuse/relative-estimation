@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Droppable } from 'react-beautiful-dnd';
-import {clearBoard} from '../store'
+import { clearBoard } from '../store'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import AddCards from './add-cards';
+
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -24,6 +26,7 @@ const DeleteZone = styled.div`
   width: 200px;
   height: 28px;
   text-align: center;
+  background-color: ${props => props.isDraggingOver ? 'skyblue' : 'white'};
 `;
 
 const Button = styled.button`
@@ -34,7 +37,8 @@ const Button = styled.button`
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 13px;
+  margin: 0 2px 0 2px;
 `;
 
 
@@ -57,22 +61,26 @@ class Actions extends React.Component {
     return;
   }
 
-  render(){
+  handleAddCards() {
+  }
+
+  render() {
     return (
       <Container>
-          <Droppable droppableId="deleteZone">
-            {(provided, snapshot) => (
-              <DeleteZone
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                isDraggingOver={snapshot.isDraggingOver}
-              >
-               Drop here to remove
-                {provided.placeholder}
-              </DeleteZone>
-            )}
-          </Droppable>
-          <Button onClick={this.handleClearBoard.bind(this)}>Reset Board(Clear all)</Button>
+        <AddCards></AddCards>
+        <Button onClick={this.handleClearBoard.bind(this)}>Reset Board(Clear all)</Button>
+        <Droppable droppableId="deleteZone">
+          {(provided, snapshot) => (
+            <DeleteZone
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              isDraggingOver={snapshot.isDraggingOver}
+            >
+              Drop here to remove
+              {provided.placeholder}
+            </DeleteZone>
+          )}
+        </Droppable>
 
       </Container>
     );

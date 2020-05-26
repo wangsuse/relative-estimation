@@ -115,7 +115,7 @@ class Column extends React.Component {
                 onFocusOut={this._handleFocusOut.bind(this)}
               />
             </Title>
-            <Close onClick={this.handleClose.bind(this, this.props.column.id)}>X</Close>
+            <Close onClick={this.handleClose.bind(this, this.props.column.id)}>&#10006;</Close>
           </TitleContainer>
           <Droppable droppableId={this.props.column.id}>
             {(provided, snapshot) => (
