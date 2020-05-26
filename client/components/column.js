@@ -9,12 +9,12 @@ const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 2px;
   margin: 1px;
-  width: 220px;
-  min-width: 150px;
+  width: 260px;
+  min-width: 160px;
 
   display: flex;
   flex-direction: column;
-  min-height: 600px;
+  min-height: 400px;
 `;
 
 const PlusContainer = styled.div`

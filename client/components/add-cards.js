@@ -28,13 +28,15 @@ class AddCards extends React.Component {
     })
   }
 
-  addCardsHandler() {
+  addCardsHandler(close) {
     if (this.state && this.state.text) {
       const text = this.state.text;
       console.log(text);
       const tasks = this.convertToTask(text);
       this.props.dispatchAddTasks(tasks);
+      close();
     }
+
   }
 
   convertToTask(text) {
@@ -52,44 +54,44 @@ class AddCards extends React.Component {
       for (let i = 0; i < data.length; i++) {
         const taskId = uuidv4()
         res[taskId] = {
-            id: taskId,
-            content: data[i]
+          id: taskId,
+          content: data[i]
         };
       }
 
-        }catch(error) {
-    console.log(error)
-  }
+    } catch (error) {
+      console.log(error)
+    }
     return res;
   }
 
-render() {
-  return (
-    <Popup trigger={<AddCardsButton >Click to add cards</AddCardsButton>} modal>
-      {close => (
-        <div className="modal">
-          <a className="close" onClick={close}>
-            &times;
+  render() {
+    return (
+      <Popup trigger={<AddCardsButton >Click to add cards</AddCardsButton>} modal>
+        {close => (
+          <div className="modal">
+            <a className="close" onClick={close}>
+              &times;
                </a>
-          <div className="header"> Enter Cards(One card will be created per line) </div>
-          <Textaera rows="30" onChange={this.handleTextChange.bind(this)}></Textaera>
-          <div className="actions">
-            <button className="button" onClick={this.addCardsHandler.bind(this)}> Add </button>
-            <button
-              className="button"
-              onClick={() => {
-                console.log("modal closed ");
-                close();
-              }}
-            >
-              close
+            <div className="header"> Enter Cards(One card will be created per line) </div>
+            <Textaera rows="30" onChange={this.handleTextChange.bind(this)}></Textaera>
+            <div className="actions">
+              <button className="button" onClick={this.addCardsHandler.bind(this,close)}> Add </button>
+              <button
+                className="button"
+                onClick={() => {
+                  console.log("modal closed ");
+                  close();
+                }}
+              >
+                close
           </button>
+            </div>
           </div>
-        </div>
-      )}
-    </Popup>
-  );
-}
+        )}
+      </Popup>
+    );
+  }
 }
 
 
