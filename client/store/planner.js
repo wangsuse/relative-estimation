@@ -22,6 +22,14 @@ const defaultPlanner = {
   },
   columnOrder: []
 }
+
+function addToLocalStorage(data){
+  window.localStorage.setItem("planner", JSON.stringify(data));
+}
+function loadFromLocalStorage(data) {
+  return window.localStorage.getItem("planner");
+}
+
 /**
  * REDUCER
  */
@@ -29,8 +37,13 @@ export default function (state = defaultPlanner, action) {
   let newPlanner;
   switch (action.type) {
     case LOAD_INITIAL_DATA:
+      const planner =loadFromLocalStorage();
+      if (planner) {
+        return JSON.parse(planner);
+      }
       return action.data
     case UPDATE_PLANNER:
+      addToLocalStorage(action.data);
       return action.data
     case UPDATE_COLUMN_TITLE:
       let {columnId, text} = action.data;
@@ -43,6 +56,7 @@ export default function (state = defaultPlanner, action) {
           [columnId]: newColumn
         }
       }
+      addToLocalStorage(newPlanner);
       return newPlanner;
     case REMOVE_COLUMN:
       columnId = action.data;
@@ -62,6 +76,7 @@ export default function (state = defaultPlanner, action) {
         columns: newColumns,
         columnOrder: newColumnOrder
       }
+      addToLocalStorage(newPlanner);
       return newPlanner;
     default:
       return state

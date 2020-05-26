@@ -19,6 +19,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
+        <Route path="*" component={Planner} />
         <Route path="/planner" component={Planner} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
@@ -30,6 +31,7 @@ class Routes extends Component {
         )}
         {/* Displays our Login component as a fallback */}
         <Route component={Login} />
+
       </Switch>
     )
   }
