@@ -7,6 +7,7 @@ const LOAD_INITIAL_DATA = 'LOAD_INITIAL_DATA'
 const UPDATE_PLANNER = 'UPDATE_PLANNER';
 const UPDATE_COLUMN_TITLE = "UPDATE_COLUMN_TITLE";
 const REMOVE_COLUMN = "REMOVE_COLUMN";
+const CLEAR_BOARD = "CLEAR_BOARD";
 /**
  * ACTION CREATORS
  */
@@ -14,6 +15,8 @@ export const loadInitialData = () => ({ type: LOAD_INITIAL_DATA, data: initialDa
 export const updatePlanner = (planner) => ({ type: UPDATE_PLANNER, data: planner})
 export const updateColumnTitle = (data) => ({type: UPDATE_COLUMN_TITLE, data: data})
 export const removeColumn = (columnId) => ({type: REMOVE_COLUMN, data: columnId})
+export const clearBoard = () => ({type: CLEAR_BOARD, data:null})
+
 
 const defaultPlanner = {
   tasks: {
@@ -28,6 +31,10 @@ function addToLocalStorage(data){
 }
 function loadFromLocalStorage(data) {
   return window.localStorage.getItem("planner");
+}
+
+function clearLocalStorage() {
+  window.localStorage.clear();
 }
 
 /**
@@ -78,6 +85,9 @@ export default function (state = defaultPlanner, action) {
       }
       addToLocalStorage(newPlanner);
       return newPlanner;
+    case CLEAR_BOARD:
+      clearLocalStorage();
+      return initialData;
     default:
       return state
   }

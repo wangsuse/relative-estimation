@@ -7,6 +7,8 @@ import Actions from './actions'
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 const Container = styled.div`
   display : flex;
@@ -28,6 +30,31 @@ class Planner extends React.Component {
     console.log("onDragUpdate called")
   }
 
+  handleRemove(result) {
+    const { destination, source, draggableId } = result;
+    const column = this.props.planner.columns[source.droppableId];
+    const newTaskIds = Array.from(column.taskIds);
+    newTaskIds.splice(source.index, 1);
+
+    const newTasks = { ...this.props.planner.tasks };
+    delete newTasks[draggableId]
+
+    const newColumn = {
+      ...column,
+      taskIds: newTaskIds
+    };
+
+    const newPlanner = {
+      ...this.props.planner,
+      columns: {
+        ...this.props.planner.columns,
+        [newColumn.id]: newColumn
+      },
+      tasks: newTasks
+    };
+    this.props.dispatchUpdatePlanner(newPlanner);
+  }
+
   onDragEnd(result) {
     const { destination, source, draggableId } = result;
 
@@ -41,28 +68,20 @@ class Planner extends React.Component {
       return;
     }
     // if drop to delete zone, delete task
-    if (destination.droppableId === "deleteZone"){
-      const column = this.props.planner.columns[source.droppableId];
-      const newTaskIds = Array.from(column.taskIds);
-      newTaskIds.splice(source.index, 1);
+    if (destination.droppableId === "deleteZone") {
+      confirmAlert({
+        message: 'Are you sure to delete this card?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: this.handleRemove.bind(this, result)
+          },
+          {
+            label: 'No',
+          }
+        ]
+      });
 
-      const newTasks = {...this.props.planner.tasks};
-      delete newTasks[draggableId]
-
-      const newColumn = {
-        ...column,
-        taskIds: newTaskIds
-      };
-
-      const newPlanner = {
-        ...this.props.planner,
-        columns: {
-          ...this.props.planner.columns,
-          [newColumn.id]: newColumn
-        },
-        tasks:newTasks
-      };
-      this.props.dispatchUpdatePlanner(newPlanner);
       return;
     }
 
@@ -88,7 +107,7 @@ class Planner extends React.Component {
         }
       };
       this.props.dispatchUpdatePlanner(newPlanner);
-    } else if(finishColumn.type === "dummy") {
+    } else if (finishColumn.type === "dummy") {
       // remove from start column
       const startColumn = this.props.planner.columns[source.droppableId];
       const newStartTaskIds = Array.from(startColumn.taskIds);
@@ -99,11 +118,11 @@ class Planner extends React.Component {
         taskIds: newStartTaskIds
       };
 
-      const newColumnId = "column-"+ uuidv4();
+      const newColumnId = "column-" + uuidv4();
       const destinationColumn = {
-          id: newColumnId,
-          title: "Click to edit title",
-          taskIds: [draggableId]
+        id: newColumnId,
+        title: "Click to edit title",
+        taskIds: [draggableId]
       }
       const newDummyId = "dummy-" + uuidv4();
       const newDummyColumn = {
@@ -113,12 +132,12 @@ class Planner extends React.Component {
         type: "dummy"
       }
 
-      const dropColumnIndex = this.props.planner.columnOrder.findIndex((element =>{
+      const dropColumnIndex = this.props.planner.columnOrder.findIndex((element => {
         return element === finishColumn.id;
       }));
 
       const newColumnOrder = Array.from(this.props.planner.columnOrder);
-      newColumnOrder.splice(dropColumnIndex+1, 0, newColumnId, newDummyId)
+      newColumnOrder.splice(dropColumnIndex + 1, 0, newColumnId, newDummyId)
 
       const newPlanner = {
         ...this.props.planner,
@@ -174,15 +193,15 @@ class Planner extends React.Component {
           onDragUpdate={this.onDragUpdate.bind(this)}
           onDragEnd={this.onDragEnd.bind(this)}
         >
-          <Actions/>
+          <Actions />
           <ColumnContainer>
-          {this.props.planner.columnOrder.map((columnId) => {
-            const column = this.props.planner.columns[columnId];
-            const tasks = column.taskIds.map(taskId => {
-              return this.props.planner.tasks[taskId]
-            })
-            return <Column key={column.id} column={column} tasks={tasks} />
-          })}
+            {this.props.planner.columnOrder.map((columnId) => {
+              const column = this.props.planner.columns[columnId];
+              const tasks = column.taskIds.map(taskId => {
+                return this.props.planner.tasks[taskId]
+              })
+              return <Column key={column.id} column={column} tasks={tasks} />
+            })}
           </ColumnContainer>
         </DragDropContext>
       </Container>
