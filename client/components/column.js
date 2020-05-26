@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Task from './task'
-import { Droppable } from 'react-beautiful-dnd'
-
+import { Droppable } from 'react-beautiful-dnd';
+import EditableLabel from 'react-inline-editing';
+import {updateColumnTitle} from '../store'
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 2px;
@@ -47,8 +49,14 @@ const PlusHolder = styled.div`
 `;
 
 
+class Column extends React.Component {
+  _handleFocusOut(text) {
+    console.log(`text changed to ${text}`)
+    const columnId = this.props.column.id;
+    this.props.dispatchUpdateColumnTitle({columnId, text})
 
-export default class Column extends React.Component {
+  }
+
   render() {
     if (this.props.column.type == "dummy") {
       return (
@@ -73,7 +81,14 @@ export default class Column extends React.Component {
     } else {
       return (
         < Container >
-          <Title >{this.props.column.title}</Title>
+          <EditableLabel text={this.props.column.title}
+            labelClassName='myLabelClass'
+            inputClassName='myInputClass'
+            labelFontWeight='bold'
+            inputFontWeight='bold'
+            onFocusOut={this._handleFocusOut.bind(this)}
+          />
+
           <Droppable droppableId={this.props.column.id}>
             {(provided, snapshot) => (
               <TaskList
@@ -94,3 +109,10 @@ export default class Column extends React.Component {
 
   }
 }
+const mapDispatch = dispatch => {
+  return {
+    dispatchUpdateColumnTitle: (data) => dispatch(updateColumnTitle(data)),
+  }
+}
+
+export default connect(null, mapDispatch)(Column)
