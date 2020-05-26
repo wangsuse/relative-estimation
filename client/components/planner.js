@@ -5,6 +5,7 @@ import { loadInitialData, updatePlanner } from '../store'
 import Column from './column'
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components'
+import { v4 as uuidv4 } from 'uuid';
 
 const Container = styled.div`
   display : flex;
@@ -15,13 +16,65 @@ class Planner extends React.Component {
     this.props.dispatchLoadInitialData();
   }
 
-  onDragStart() {
+  onDragStart(start) {
+    // create the '+' columns
+    console.log("drag started")
+    // const newColumns = {...this.props.planner.columns};
+    // const l = Object.keys(newColumns).length;
+    // let index = 0
+    // for (let i = 0; i < l; i++){
+    //   newColumns[`dummy-${index}`] = {
+    //     id: `dummy-${index}`,
+    //     title: "",
+    //     taskIds: [],
+    //     type: "dummy"
+    //   };
+    //   index += 1;
+    // }
+    // const columnOrder = this.props.planner.columnOrder;
+    // const newColumnOrder = []
+    // for (let i = 0; i < l; i++) {
+    //   newColumnOrder.push(columnOrder[i]);
+    //   newColumnOrder.push(`dummy-${i}`);
+    // }
+
+    // const newPlanner = {
+    //   ...this.props.planner,
+    //   columns: newColumns,
+    //   columnOrder:newColumnOrder
+    // };
+
+    // this.props.dispatchUpdatePlanner(newPlanner);
 
   }
   onDragUpdate() {
-
+    console.log("onDragUpdate called")
   }
+
+  // removeDummyColumn() {
+  //   // remove the "+" column
+  //   const newColumns = {};
+  //   const columns = this.props.planner.columns;
+  //   for (const key in columns){
+  //     if (columns[key].type !== "dummy"){
+  //       newColumns[key] = {...columns[key]}
+  //     }
+  //   }
+
+  //   const newColumnOrder = Array.from(this.props.planner.columnOrder).filter(columnName =>{
+  //     return !columnName.startsWith("dummy-")
+  //   });
+
+  //   const newPlanner = {
+  //     ...this.props.planner,
+  //     columns: newColumns,
+  //     columnOrder:newColumnOrder
+  //   };
+
+  //   this.props.dispatchUpdatePlanner(newPlanner);
+  // }
   onDragEnd(result) {
+    // this.removeDummyColumn.bind(this)();
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -56,6 +109,52 @@ class Planner extends React.Component {
         }
       };
       this.props.dispatchUpdatePlanner(newPlanner);
+    } else if(finishColumn.type === "dummy") {
+      // remove from start column
+      const startColumn = this.props.planner.columns[source.droppableId];
+      const newStartTaskIds = Array.from(startColumn.taskIds);
+      newStartTaskIds.splice(source.index, 1);
+
+      const newStartColumn = {
+        ...startColumn,
+        taskIds: newStartTaskIds
+      };
+
+      const newColumnId = "column-"+ uuidv4();
+      const destinationColumn = {
+          id: newColumnId,
+          title: "New Column",
+          taskIds: [draggableId]
+      }
+      const newDummyId = "dummy-" + uuidv4();
+      const newDummyColumn = {
+        id: newDummyId,
+        title: "n",
+        taskIds: [],
+        type: "dummy"
+      }
+
+      const dropColumnIndex = this.props.planner.columnOrder.findIndex((element =>{
+        return element === finishColumn.id;
+      }));
+
+      const newColumnOrder = Array.from(this.props.planner.columnOrder);
+      newColumnOrder.splice(dropColumnIndex+1, 0, newColumnId, newDummyId)
+
+      const newPlanner = {
+        ...this.props.planner,
+        columns: {
+          ...this.props.planner.columns,
+          [newStartColumn.id]: newStartColumn,
+          [destinationColumn.id]: destinationColumn,
+          [newDummyColumn.id]: newDummyColumn
+        },
+        columnOrder: newColumnOrder
+      };
+      this.props.dispatchUpdatePlanner(newPlanner);
+
+
+
     } else {
       // moving from one list to another
       const startColumn = this.props.planner.columns[source.droppableId];
