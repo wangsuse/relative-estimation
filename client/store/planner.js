@@ -25,7 +25,8 @@ const defaultPlanner = {
   },
   columns: {
   },
-  columnOrder: []
+  columnOrder: [],
+  jiraUrl: "Click to enter JIRA domain url"
 }
 
 function addToLocalStorage(data) {
@@ -44,9 +45,10 @@ function clearLocalStorage() {
  */
 export default function (state = defaultPlanner, action) {
   let newPlanner;
+  let planner;
   switch (action.type) {
     case LOAD_INITIAL_DATA:
-      const planner = loadFromLocalStorage();
+      planner = loadFromLocalStorage();
       if (planner) {
         return JSON.parse(planner);
       }
@@ -110,6 +112,10 @@ export default function (state = defaultPlanner, action) {
       clearLocalStorage();
       return initialData;
     default:
+      planner = loadFromLocalStorage();
+      if (planner) {
+        return JSON.parse(planner);
+      }
       return state
   }
 }

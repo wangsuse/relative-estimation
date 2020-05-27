@@ -30,7 +30,7 @@ class AddCards extends React.Component {
 
   addCardsHandler(close) {
     if (this.state && this.state.text) {
-      const text = this.state.text;
+      const text = this.state.text.replace(/\t/g, " ");
       console.log(text);
       const tasks = this.convertToTask(text);
       this.props.dispatchAddTasks(tasks);

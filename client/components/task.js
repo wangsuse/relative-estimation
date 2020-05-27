@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd';
 
@@ -7,11 +8,17 @@ const Container = styled.div`
     border-radius: 2px;
     padding : 8px;
     margin-bottom: 8px;
-    background-color: ${props => (props.isDragging? 'lightgreen': 'white')};
+    background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')};
 `;
 
-export default class Task extends React.Component {
+class Task extends React.Component {
   render() {
+    let jiraLink = null;
+    if (this.props.planner.jiraUrl != "Click to enter JIRA domain url" && this.props.task.content) {
+      const jiraId = this.props.task.content.split(" ")[0]
+      jiraLink = <a href={this.props.planner.jiraUrl + "/browse/" + jiraId} target="_blank">&#x279a; </a>;
+    }
+
     return (
       <Draggable draggableId={this.props.task.id} index={this.props.index}>
         {(provided, snapshot) => (
@@ -20,7 +27,7 @@ export default class Task extends React.Component {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
-          >
+          > {jiraLink}
             {this.props.task.content}
           </Container>
         )}
@@ -28,3 +35,19 @@ export default class Task extends React.Component {
     )
   }
 }
+/**
+ * CONTAINER
+ */
+const mapState = state => {
+  return {
+    planner: state.planner
+  }
+}
+
+const mapDispatch = dispatch => {
+  return {
+
+  }
+}
+
+export default connect(mapState, mapDispatch)(Task)

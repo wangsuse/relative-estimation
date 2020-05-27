@@ -2,6 +2,7 @@ const initialData = {
   tasks: {
     "task-1": { id: "task-1", content: "example task1" }
   },
+  jiraUrl: "Click to enter JIRA domain url",
   columns: {
     "column-1": {
       id: "column-1",

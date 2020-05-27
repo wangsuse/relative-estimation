@@ -2,10 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Droppable } from 'react-beautiful-dnd';
-import { clearBoard } from '../store'
+import { clearBoard, updatePlanner } from '../store'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import AddCards from './add-cards';
+import EditableLabel from 'react-inline-editing';
 
 
 const Container = styled.div`
@@ -55,6 +56,11 @@ const ExportButton = styled.button`
 `;
 
 
+const UrlContainer = styled.div`
+  padding: 6px;
+  border: 1px solid blue;
+`;
+
 class Actions extends React.Component {
   handleClearBoard() {
     confirmAlert({
@@ -75,7 +81,7 @@ class Actions extends React.Component {
 
   handleExport() {
     const dataStr = JSON.stringify(this.props.planner);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
 
     const exportFileDefaultName = 'data.json';
 
@@ -83,6 +89,15 @@ class Actions extends React.Component {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
+  }
+
+  handleClickJiraUrl(text) {
+    console.log(`text changed to ${text}`)
+    const newPlanner = {
+      ...this.props.planner,
+      jiraUrl: text
+    }
+    this.props.dispatchUpdatePlanner(newPlanner)
   }
 
   render() {
@@ -103,6 +118,15 @@ class Actions extends React.Component {
             </DeleteZone>
           )}
         </Droppable>
+        <UrlContainer>
+          <EditableLabel text={this.props.planner.jiraUrl}
+            labelClassName='myLabelClass'
+            inputClassName='myInputClass'
+            inputWidth='150px'
+            inputHeight='25px'
+            onFocusOut={this.handleClickJiraUrl.bind(this)}
+          />
+        </UrlContainer>
 
       </Container>
     );
@@ -119,7 +143,8 @@ const mapState = state => {
 
 const mapDispatch = dispatch => {
   return {
-    dispatchClearBoard: () => dispatch(clearBoard())
+    dispatchClearBoard: () => dispatch(clearBoard()),
+    dispatchUpdatePlanner: (planner) => dispatch(updatePlanner(planner))
   }
 }
 
