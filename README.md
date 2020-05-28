@@ -1,5 +1,5 @@
-[DEMO](https://relative-estimation.herokuapp.com/)
-
+[DEMO Site](https://relative-estimation.herokuapp.com/)
+![](gif/demo.gif)
 This app can be used to do JIRA card estimation. It can be a helpful tool for group to do relative estimation together.
 
 ## Features 
