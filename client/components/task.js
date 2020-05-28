@@ -15,8 +15,10 @@ class Task extends React.Component {
   render() {
     let jiraLink = null;
     if (this.props.planner.jiraUrl != "Click to enter JIRA domain url" && this.props.task.content) {
-      const jiraId = this.props.task.content.split(" ")[0]
-      jiraLink = <a href={this.props.planner.jiraUrl + "/browse/" + jiraId} target="_blank">&#x279a; </a>;
+      const jiraNums = this.props.task.content.match(/ENG\w+-\d+/g);
+      if (jiraNums && jiraNums.length > 0){
+        jiraLink = <a href={this.props.planner.jiraUrl + "/browse/" + jiraNums[0]} target="_blank">&#x279a; </a>;
+      }
     }
 
     return (
