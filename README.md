@@ -1,15 +1,15 @@
-![DEMO](https://relative-estimation.herokuapp.com/)
+[DEMO](https://relative-estimation.herokuapp.com/)
 
 This app can be used to do JIRA card estimation. It can be a helpful tool for group to do relative estimation together.
 
-## Features 👀
+## Features 
 
 - Add and Delete cards
 - Move cards between groups
 - Add and Delete groups
 - Reset Board
 
-## Built with 🏗
+## Built with 
 
 - [React](https://github.com/facebook/react)
 - [Redux](https://github.com/reduxjs/redux)
