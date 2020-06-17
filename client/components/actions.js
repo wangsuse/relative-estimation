@@ -105,7 +105,7 @@ class Actions extends React.Component {
   }
 
   handleClickJiraUrl(text) {
-    if (text == "") {
+    if (text.trim() == "") {
       text = "Click to enter JIRA domain url";
     }
     console.log(`text changed to ${text}`)
@@ -149,7 +149,7 @@ class Actions extends React.Component {
           )}
         </Droppable>
         <UrlContainer>
-          <EditableLabel text={this.props.planner.jiraUrl}
+          <EditableLabel text={this.props.planner.jiraUrl.trim() === "" ? "Click to enter JIRA domain url" : this.props.planner.jiraUrl }
             labelClassName='myLabelClass'
             inputClassName='myInputClass'
             inputWidth='150px'
