@@ -105,6 +105,9 @@ class Actions extends React.Component {
   }
 
   handleClickJiraUrl(text) {
+    if (text == "") {
+      text = "Click to enter JIRA domain url";
+    }
     console.log(`text changed to ${text}`)
     const newPlanner = {
       ...this.props.planner,
